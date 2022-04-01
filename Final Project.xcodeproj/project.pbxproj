@@ -17,6 +17,10 @@
 		09A3593727F74777003817FC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A3590D27F74775003817FC /* ContentView.swift */; };
 		09A3593827F74777003817FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09A3590E27F74777003817FC /* Assets.xcassets */; };
 		09A3593927F74777003817FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09A3590E27F74777003817FC /* Assets.xcassets */; };
+		09A3594927F75168003817FC /* band_structure_calc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A3594827F75168003817FC /* band_structure_calc.swift */; };
+		09A3594A27F75168003817FC /* band_structure_calc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A3594827F75168003817FC /* band_structure_calc.swift */; };
+		09A3594C27F76BA7003817FC /* Band_types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A3594B27F76BA7003817FC /* Band_types.swift */; };
+		09A3594D27F76BA7003817FC /* Band_types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A3594B27F76BA7003817FC /* Band_types.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +53,8 @@
 		09A3592C27F74777003817FC /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09A3593027F74777003817FC /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		09A3593227F74777003817FC /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		09A3594827F75168003817FC /* band_structure_calc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = band_structure_calc.swift; sourceTree = "<group>"; };
+		09A3594B27F76BA7003817FC /* Band_types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Band_types.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +105,8 @@
 			children = (
 				09A3590C27F74775003817FC /* Final_ProjectApp.swift */,
 				09A3590D27F74775003817FC /* ContentView.swift */,
+				09A3594827F75168003817FC /* band_structure_calc.swift */,
+				09A3594B27F76BA7003817FC /* Band_types.swift */,
 				09A3590E27F74777003817FC /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -299,7 +307,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09A3594C27F76BA7003817FC /* Band_types.swift in Sources */,
 				09A3593627F74777003817FC /* ContentView.swift in Sources */,
+				09A3594927F75168003817FC /* band_structure_calc.swift in Sources */,
 				09A3593427F74777003817FC /* Final_ProjectApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -308,7 +318,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09A3594D27F76BA7003817FC /* Band_types.swift in Sources */,
 				09A3593727F74777003817FC /* ContentView.swift in Sources */,
+				09A3594A27F75168003817FC /* band_structure_calc.swift in Sources */,
 				09A3593527F74777003817FC /* Final_ProjectApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
