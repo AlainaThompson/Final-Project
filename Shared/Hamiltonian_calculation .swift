@@ -70,14 +70,20 @@ class BandStructures: NSObject,ObservableObject {
     for m in stride(from: -2.0, through: 2.0, by: 0.5) {
         let n = floor(pow(Double(states), 3)/2)
         let s = m + n
-        let flr = floor(states/2)
-        let statesSqrd = pow(states, 2)
+        let flr = floor(Double(states)/2.0)
+        let statesSqrd = pow(Double(states), 2.0)
         
-        u = floor(s/statesSqrd) - flr
-        v = s%floor(statesSqrd/(states - flr))
-        w = s%(states - flr)
-        G.append(b1*u + b2*v + b3*w)
-        return u, v, w
+        u = floor(s/Double(statesSqrd)) - flr
+        v = s.truncatingRemainder(dividingBy:floor(Double(statesSqrd/(Double(states) - flr))))
+        w = s.truncatingRemainder(dividingBy:(Double(states) - flr))
+       // w = s%(Double(states) - flr)
+        b1 = b1.map { $0 * u }
+        b2 = b2.map { $0 * v }
+        b3 = b3.map { $0 * w }
+        var b12 = zip(b1, b2).map { $0 + $1 }
+        var bValues = zip(b12, b3).map { $0 + $1 }
+        G.append(bValues)
+        
     }
         print(G)
     }
@@ -109,7 +115,9 @@ class BandStructures: NSObject,ObservableObject {
         
         var kPlusG = zip(k, G).map { $0 + $1 }
         var kGSquared = zip(kPlusG, kPlusG).map { $0 * $1 }
-        var H = hbarsquareoverm*kGSquared*delta + potential
+        var Hconstants = hbarsquareoverm*delta
+        var Hvalues = kGSquared.map { $0 * Hconstants }
+        var H = zip(Hvalues, potential).map { $0 + $1 }
     
         var realStartingArray: [[Double]] = []
         
@@ -271,14 +279,22 @@ class BandStructures: NSObject,ObservableObject {
                         plotDataModel!.changingPlotParameters.lineColor = .red()
                         plotDataModel!.changingPlotParameters.title = "E vs k"
                             
-            for i in 0..<x_array.count {
-            plotDataModel!.calculatedText += "\(x_array[i]), \t\(psi_array[i])\n"
+       //     for i in 0..<x_array.count {
+      //      plotDataModel!.calculatedText += "\(x_array[i]), \t\(psi_array[i])\n"
             
-                        let dataPoint: plotDataType = [.X: x_array[i], .Y: psi_array[i]]
-                        plotDataModel!.appendData(dataPoint: [dataPoint])
+       //                 let dataPoint: plotDataType = [.X: x_array[i], .Y: psi_array[i]]
+        //                plotDataModel!.appendData(dataPoint: [dataPoint])
                         
                     
             }
+    
+    
+    
+    
+    
+    
+    
+    
         }
         
         
@@ -313,4 +329,4 @@ class BandStructures: NSObject,ObservableObject {
     
     
     
-}
+

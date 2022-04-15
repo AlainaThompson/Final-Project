@@ -19,20 +19,23 @@ class BandStructureTypes: NSObject,ObservableObject {
 //AlSb, CdTe, GaAs, GaP, GaSb, Ge, InAs, InP, InSb, Si, Sn, ZnS, ZnSe, and ZnTe.
   
     override init() {
-        var sumG = G.reduce(0, +) //How to take absolute value?
+        var GSquared = zip(G, G).map { $0 * $1 }
+    
+        
+        var GG = GSquared.reduce(0, +)
         
         var Gtau = zip(G, tau).map { $0 * $1 } //Need to take dot product
         
         Gtau = Gtau.map { $0 * Double.pi*2 }
-           
     }
+    
     
     
   
     
 
 //symmetric potential (VS) and anti-symmetric potential (VA) for each structure
-    func getPotential(sumG: Double, Gtau: Double) {
+    func getPotential(sumG: Double, Gtau: Double, GG: Double) {
     //Data Values for each band structure from Table II in Cohen and Bergstresser Paper
     //S and A represent symmetric and anti-symmetric
     //Numbers 3, 4, 8, or 11 represent square of reciprocal lattice vector G
@@ -49,7 +52,7 @@ class BandStructureTypes: NSObject,ObservableObject {
     var V11A = 0.0
     var VS = 0.0 //symmetric
     var VA = 0.0 //antisymmetric
-    var GG = sumG*sumG //G*G
+    
         
         
             

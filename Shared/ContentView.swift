@@ -50,17 +50,22 @@ struct ContentView: View {
     }
         
         
-            func calculateBands(){
-                   
-                  
-                myBands.makeG = self.makeG
             
-            }
             
             
 }
 }
 }
+    
+    func calculateBands(){
+           
+          
+        myBands.makeG()
+    
+    }
+    
+    
+    
 }
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
