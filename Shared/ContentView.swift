@@ -19,7 +19,7 @@ struct ContentView: View {
     @State var tau:[Double] = []
     @State var negTau:[Double] = []
     @State var V = 0.0
-    @State var stepSize = 0.01
+    @ObservedObject var myBands = BandStructures()
     
     @State var bandTypes = ["AlSb", "CdTe", "GaAs", "GaP", "GaSb", "Ge", "InAs", "InP", "InSb", "Si", "Sn", "ZnS", "ZnSe", "ZnTe"]
         @State var selectedBand = "Si"
@@ -50,10 +50,12 @@ struct ContentView: View {
     }
         
         
-  
+            func calculateBands(){
+                   
+                  
+                myBands.makeG = self.makeG
             
-            
-            
+            }
             
             
 }

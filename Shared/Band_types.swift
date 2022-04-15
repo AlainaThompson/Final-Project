@@ -21,7 +21,7 @@ class BandStructureTypes: NSObject,ObservableObject {
     override init() {
         var sumG = G.reduce(0, +) //How to take absolute value?
         
-        var Gtau = zip(G, tau).map { $0 * $1 }
+        var Gtau = zip(G, tau).map { $0 * $1 } //Need to take dot product
         
         Gtau = Gtau.map { $0 * Double.pi*2 }
            
@@ -181,7 +181,14 @@ class BandStructureTypes: NSObject,ObservableObject {
         V4A = 0.09*rydberg
         V11A = 0.04*rydberg
         
-    //default case Si?
+        default: //default to Si
+        a = 5.43
+        V3S = -0.21*rydberg
+        V8S = 0.04*rydberg
+        V11S = 0.08*rydberg
+        V3A = 0.0
+        V4A = 0.0
+        V11A = 0.0
         
         
         
@@ -198,7 +205,8 @@ class BandStructureTypes: NSObject,ObservableObject {
         var SS = cos(Gtau) // Symmetric structure factor
         var SA = sin(Gtau) // Anti-symmetric structure factor
         
-        while GG <= 11 {
+        //V needs to be a summation over all G values
+        //Only non-zero V are at these values
         
             if GG == 3 {
                 VS = V3S
@@ -224,9 +232,7 @@ class BandStructureTypes: NSObject,ObservableObject {
             }
             
             
-            GG += 1
-        
-        }
+            
     
         
         
