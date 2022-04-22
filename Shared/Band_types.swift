@@ -6,10 +6,14 @@
 //
 
 import Foundation
-class BandStructureTypes: NSObject,ObservableObject {
+import SwiftUI
+import Accelerate
+import Cocoa
+
+class Potential: NSObject,ObservableObject {
     
  var rydberg = 13.6056980659
-    
+ var GData: BandStructures? = nil
 @Published var selectedBand = ""
     @Published var a = 5.43
     @Published var G:[Double] = [0.0, 0.0, 0.0]
@@ -18,31 +22,6 @@ class BandStructureTypes: NSObject,ObservableObject {
 //Band Structures:
 //AlSb, CdTe, GaAs, GaP, GaSb, Ge, InAs, InP, InSb, Si, Sn, ZnS, ZnSe, and ZnTe.
   
-    override init() {
-        var GSquared = zip(G, G).map { $0 * $1 }
-    
-        
-        var GG = GSquared.reduce(0, +)
-        
-        var Gtau = zip(G, tau).map { $0 * $1 } //Need to take dot product
-        
-        Gtau = Gtau.map { $0 * Double.pi*2 }
-    }
-    
-    
-    
-  
-    
-
-//symmetric potential (VS) and anti-symmetric potential (VA) for each structure
-    func getPotential(sumG: Double, Gtau: Double, GG: Double) {
-    //Data Values for each band structure from Table II in Cohen and Bergstresser Paper
-    //S and A represent symmetric and anti-symmetric
-    //Numbers 3, 4, 8, or 11 represent square of reciprocal lattice vector G
-    //Only these G^2 values are allowed to have nonzero potential
-    
-    
-        
     
     var V3S = 0.0
     var V8S = 0.0
@@ -53,7 +32,36 @@ class BandStructureTypes: NSObject,ObservableObject {
     var VS = 0.0 //symmetric
     var VA = 0.0 //antisymmetric
     
+    
+   
+    override init() {
         
+        super.init()
+        let fcc:[Double] = [0.125, 0.125, 0.125]
+        
+        let r1 = fcc.map { $0 * self.a }
+        
+        
+        tau = r1
+        
+        
+    }
+  
+    
+
+//symmetric potential (VS) and anti-symmetric potential (VA) for each structure
+    
+    
+    func getPotential(sumG: Double, Gtau: Double, GG: Double) {
+        
+        
+    //Data Values for each band structure from Table II in Cohen and Bergstresser Paper
+    //S and A represent symmetric and anti-symmetric
+    //Numbers 3, 4, 8, or 11 represent square of reciprocal lattice vector G
+    //Only these G^2 values are allowed to have nonzero potential
+    
+    
+    
         
             
             
@@ -195,46 +203,14 @@ class BandStructureTypes: NSObject,ObservableObject {
         
         
         
-    
-        //pseudopotential symmetric and anti-symmetric form
-        //
-        //              s      s        A    A   - iG * r
-        //V(r)  =  Σ ( S  (G) V   +  i S (G)V ) e
-        //         G           G             G
-        //
-        //G dependent on the symmetry point?
-    
-        var i = sqrt(-1)
-        var SS = cos(Gtau) // Symmetric structure factor
-        var SA = sin(Gtau) // Anti-symmetric structure factor
+       
         
-        //V needs to be a summation over all G values
-        //Only non-zero V are at these values
         
-            if GG == 3 {
-                VS = V3S
-                VA = V3A
-                V += (SS*VS + i*SA*VA)
-                
-            }
-            if GG == 4 {
-               VS = 0.0
-               VA = V4A
-               V += (SS*VS + i*SA*VA)
-            }
-            if GG == 8 {
-               VS = V8S
-               VA = 0.0
-               V += (SS*VS + i*SA*VA)
-                
-            }
-            if GG == 11 {
-                VS = V11S
-                VA = V11A
-                V += (SS*VS + i*SA*VA)
-            }
             
+         
+       
             
+           
             
     
         
@@ -244,6 +220,7 @@ class BandStructureTypes: NSObject,ObservableObject {
         
     
     }
+        
 }
 
 

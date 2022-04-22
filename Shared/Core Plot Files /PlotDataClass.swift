@@ -16,6 +16,12 @@ class PlotDataClass: NSObject, ObservableObject {
     @Published var calculatedText = ""
     //In case you want to plot vs point number
     @Published var pointNumber = 1.0
+    @Published var selectedBand = "Si"
+    
+    var PotentialData: Potential? = nil
+    
+
+    
     
     init(fromLine line: Bool) {
         
@@ -23,15 +29,13 @@ class PlotDataClass: NSObject, ObservableObject {
         //Must call super init before initializing plot
         super.init()
        
-        
         //Intitialize the first plot
-        self.plotBlank()
+        self.plotBlank(selectedBand: selectedBand)
         
        }
     
     
-    
-    func plotBlank()
+    func plotBlank(selectedBand: String)
     {
         plotData = []
         
@@ -40,10 +44,10 @@ class PlotDataClass: NSObject, ObservableObject {
         changingPlotParameters.yMin = -1.0
         changingPlotParameters.xMax = 4.0
         changingPlotParameters.xMin = -1.0
-        changingPlotParameters.xLabel = "x"
-        changingPlotParameters.yLabel = "y"
+        changingPlotParameters.xLabel = "k"
+        changingPlotParameters.yLabel = "E (eV)"
         changingPlotParameters.lineColor = .red()
-        changingPlotParameters.title = " y = x"
+        changingPlotParameters.title = "\(selectedBand) Band Structure"
         
     }
     
