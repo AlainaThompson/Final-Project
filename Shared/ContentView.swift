@@ -16,15 +16,15 @@ struct ContentView: View {
     
     @EnvironmentObject var plotDataModel :PlotDataClass
     @State var a = 5.43 //a given in Angstroms
-    @State var k:[Double] = []
+    @State var k_array:[Double] = []
     @State var G:[Double] = []
     @State var tau:[Double] = []
     @State var negTau:[Double] = []
     @State var V = Complex<Double>(0, 0)
     @State var potential = 0.0
     @ObservedObject var myBands = BandStructures()
-    @ObservedObject var myPotential = Potential()
-    @ObservedObject var myk = WaveVector()
+    
+ 
     
     @State var bandTypes = ["AlSb", "CdTe", "GaAs", "GaP", "GaSb", "Ge", "InAs", "InP", "InSb", "Si", "Sn", "ZnS", "ZnSe", "ZnTe"]
         @State var selectedBand = "Si"
@@ -53,7 +53,7 @@ struct ContentView: View {
     
         }
             HStack{
-                            Button("Calculate G", action: {self.calculateBands()} )
+                Button("Calculate G", action: {self.calculateBands()} )
                             .padding()
                             
                         }
@@ -72,38 +72,25 @@ struct ContentView: View {
 
 }
     
-    func calculatePotential(){
-        let GG = 0.0
-        let Gtau = 0.0
-        let sumG = 0.0
-        myPotential.getPotential(sumG: sumG, Gtau: Gtau, GG: GG)
-    }
+   
     
     
+   
     
-    func calculateWaveVector(){
-        myk.kPoints()
-    }
-    
-    func calculateBands(){
-        
-        self.calculatePotential()
-        self.calculateWaveVector()
+    func calculateBands() {
         
         
-        myBands.PotentialData = myPotential
-        myBands.kData = myk
-        myBands.makeG(selectedBand: selectedBand)
         
-        //   myBands.getHamiltonian(potential: [Double])
-    
+        myBands.kPoints()
+        
+       
     }
     
     
     func clear(){
                 
            
-            myk.k = []
+            myBands.k_array = []
             myBands.H = []
             myBands.G = []
         myBands.u = 0.0

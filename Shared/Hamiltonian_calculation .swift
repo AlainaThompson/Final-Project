@@ -14,17 +14,25 @@ import Numerics
 
 
 class BandStructures: NSObject,ObservableObject {
+//    func numberOfRecords(for plot: CPTPlot) -> UInt {
+//        <#code#>
+//    }
+//    , CPTPlotDataSource
+//    func numberOfRecords(for plot: CPTPlot) -> UInt {
+//        <#code#>
+//    }
+    
     
     var plotDataModel: PlotDataClass? = nil
-    var PotentialData: Potential? = nil
-    var kData: WaveVector? = nil
+    
+    
     @Published var a = 5.43
     @Published var tau:[Double] = []
     @Published var negTau:[Double] = []
     @Published var G:[Double] = []
     @Published var stepSize = 0.01
     let hbarsquareoverm = 7.62 // units of eV A^2
-    var H:[Complex<Double>] = []
+    var H:[__CLPK_doublecomplex] = []
     var u = 0.0
     var v = 0.0
     var w = 0.0
@@ -40,10 +48,10 @@ class BandStructures: NSObject,ObservableObject {
     var VA = 0.0 //antisymmetric
     
     @Published var selectedBand = ""
-    @Published var V = Complex<Double>(0, 0)
     
-    
-    
+    @Published var V = __CLPK_doublecomplex(r:0.0, i:0.0)
+    @Published var k_array:[Double] = []
+   // var HMatrix: [[__CLPK_doublecomplex]] = Array(repeating: Array(repeating: __CLPK_doublecomplex(r: 0, i: 0), count: 125), count: 125)
     
     
     
@@ -66,6 +74,7 @@ class BandStructures: NSObject,ObservableObject {
         let r1 = fcc.map { $0 * self.a }
         
         let r2 = r1.map { $0 * -1 }
+        
        
         tau = r1
         negTau = r2
@@ -73,11 +82,202 @@ class BandStructures: NSObject,ObservableObject {
     }
     
     
+    
+    
+    
+    
+    
+     
+      var kz_array:[Double] = []
+      var ky_array:[Double] = []
+      var kx_array:[Double] = []
+     
+      
+    var E1:[Double] = []
+    var E2:[Double] = []
+    var E3:[Double] = []
+    var E4:[Double] = []
+    var E5:[Double] = []
+    var E6:[Double] = []
+    var E7:[Double] = []
+    var E8:[Double] = []
+    var E9:[Double] = []
+    var E10:[Double] = []
+    
+    
+    
+    
+    
+    
+      
+      
+      func kPoints() {
+          //Need to take the matrix at each k point.
+          //Range of k points varying from each symmetry point to the next
+          //kPoints() is set up to go through each k point over the specified ranges and calculate the matrix for each point.
+          
+          //L to Gamma:
+          
+          var kx = 0.5
+          var ky = 0.5
+          var kz = 0.5
+          
+          
+          for kx in stride(from: 0.5, to: 0.0, by: -0.05) {
+              kx_array.append(kx)
+              
+                    }
+              for ky in stride(from: 0.5, to: 0.0, by: -0.05){
+                  ky_array.append(ky)
+          }
+                  for kz in stride(from: 0.5, to: 0.0, by: -0.05) {
+                      kz_array.append(kz)
+                    
+                      
+                  }
+              
+              
+             
+          for n in stride(from: 0, through: 9, by: 1) {
+              
+              k_array = []
+        
+          k_array.append(kx_array[n])
+          k_array.append(ky_array[n])
+          k_array.append(kz_array[n])
+              
+             makeG(selectedBand: selectedBand)
+        
+          }
+              
+          
+          
+          //Gamma to X:
+          
+          kx = 0.0
+          
+          
+          for kx in stride(from: 0.0, to: 1, by: 0.1){
+             
+              ky = 0.0
+              kz = 0.0
+              kx_array.append(kx)
+              ky_array.append(ky)
+              kz_array.append(kz)
+             
+          }
+          
+          for n in stride(from: 10, through: 19, by: 1) {
+              k_array = []
+          k_array.append(kx_array[n])
+          k_array.append(ky_array[n])
+          k_array.append(kz_array[n])
+              
+             
+              makeG(selectedBand: selectedBand)
+              
+          }
+          
+         
+          
+          
+          
+          
+          
+          
+          
+          //X to K:
+          
+          kx = 1.0
+          ky = 0.0
+          
+          
+          for kx in stride(from: 1.0, to: 0.75, by: -0.025) {
+              kx_array.append(kx)
+              kz = 0.0
+              kz_array.append(kz)
+          }
+              for ky in stride(from: 0.0, to: 0.75, by: 0.075) {
+                   
+                  ky_array.append(ky)
+          }
+          
+          for n in stride(from: 20, through: 29, by: 1) {
+               k_array = []
+          k_array.append(kx_array[n])
+          k_array.append(ky_array[n])
+          k_array.append(kz_array[n])
+              
+             
+              makeG(selectedBand: selectedBand)
+          }
+          
+          
+          
+          
+          
+          
+          //K to Gamma
+          
+          kx = 0.75
+          ky = 0.75
+         
+          for kx in stride(from: 0.75, to: 0.0, by: -0.075) {
+              kx_array.append(kx)
+              kz = 0.0
+              kz_array.append(kz)
+          }
+              for ky in stride(from: 0.75, to: 0.0, by: -0.075) {
+                
+                  ky_array.append(ky)
+              }
+          kx = 0.0
+          ky = 0.0
+          kz = 0.0
+          kx_array.append(kx)
+          ky_array.append(ky)
+          kz_array.append(kz)
+          
+          for n in stride(from: 30, through: 40, by: 1) {
+              k_array = []
+          k_array.append(kx_array[n])
+          k_array.append(ky_array[n])
+          k_array.append(kz_array[n])
+              
+              makeG(selectedBand: selectedBand)
+              
+          }
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    var count = 0
+    
     func makeG(selectedBand: String) {
     
     //Reciprocal Lattice Vector G
     //G^2 only has non-zero potential at 3, 4, 8, 11
     //G = b1*u + b2*v + b3*w  with u, v, w in range -2, -1, 0, 1, 2
+    //G must permutate over each possible combination of u, v, and, w
     //creates a 125x125 matrix
     //states = 5 --> {-2, -1, 0, 1, 2}
     
@@ -86,14 +286,14 @@ class BandStructures: NSObject,ObservableObject {
         let b2:[Double] = [1, -1, 1]
     
         let b3 :[Double] = [1, 1, -1]
-    //How to go through all u, v, w values to get G for matrix?
+    
         let states = 5
     //m is an increment that goes over all possible values of u, v, and w
        
         
         for m in stride(from: -62.0, through: 62.0, by: 1.0) {
             
-        var G:[Double] = [] //Reset G through each m iteration after calling on V and appending to H
+        var G:[Double] = [] //Reset G through each m iteration after calling on V and appending to H as this allows for all G values in the matrix
         let s = Double(states)
         let n = pow(s, 3.0) - 1.0
         let nHalf = n/2.0
@@ -121,15 +321,19 @@ class BandStructures: NSObject,ObservableObject {
             let GG = GSquared.reduce(0, +)
         
             
-            var Gtau = zip(G, tau).map { $0 * $1 } //Multiply x, y, z components
+            let Gtau = zip(G, tau).map { $0 * $1 } //Multiply x, y, z components
             
             var GdotTau = Double(Gtau.reduce(0, +)) //add them together (equivalent to dot product)
             
-            GdotTau = GdotTau*2*Double.pi //Should not be an array
+            GdotTau = GdotTau*2*Double.pi
             
    
             
             switch selectedBand {
+                
+                //Select the type of structure
+                //Must multiply by the rydberg constant 13.6 eV to get the values of potential in eV
+                
                 case "Si":
                 a = 5.43
                 V3S = -0.21*rydberg
@@ -287,40 +491,41 @@ class BandStructures: NSObject,ObservableObject {
            
         
            
-            var SS = cos(GdotTau) // Symmetric structure factor
-            var SA = sin(GdotTau) // Anti-symmetric structure factor
+            let SS = cos(GdotTau) // Symmetric structure factor
+            let SA = sin(GdotTau) // Anti-symmetric structure factor
             
             //V needs to be a summation over all G values
             //Only non-zero V are at these values
+            //For all other G values append V = 0
             
                 if GG == 3 {
                     VS = V3S
                     VA = V3A
-                    V += Complex<Double>(SS*VS, SA*VA)
+                    V = __CLPK_doublecomplex(r:SS*VS, i:SA*VA)
                     
                 }
                 if GG == 4 {
                    VS = 0.0
                    VA = V4A
-                    V += Complex<Double>(SS*VS, SA*VA)
+                    V = __CLPK_doublecomplex(r:SS*VS, i:SA*VA)
                 }
                 if GG == 8 {
                    VS = V8S
                    VA = 0.0
-                    V += Complex<Double>(SS*VS, SA*VA)
+                    V = __CLPK_doublecomplex(r:SS*VS, i:SA*VA)
                     
                 }
                 if GG == 11 {
                     VS = V11S
                     VA = V11A
-                    V += Complex<Double>(SS*VS, SA*VA)
+                    V = __CLPK_doublecomplex(r:SS*VS, i:SA*VA)
                     
                 }
                 else {
-                    V += Complex<Double>(0, 0)
+                    V = __CLPK_doublecomplex(r:0.0, i:0.0)
                 }
             
-           
+           print(V)
             
             
             
@@ -336,10 +541,13 @@ class BandStructures: NSObject,ObservableObject {
             
             
             
-            var k = kData!.k
             
-            
-            
+            let k = k_array
+//Hamiltonian:
+//                 2
+//            hbar           2
+//H      =   -------|G  +  k|   +   V
+// i, j        2m                    G
             
             
            
@@ -347,10 +555,11 @@ class BandStructures: NSObject,ObservableObject {
             let kGscalar = kPlusG.reduce(0, +)
             let kGSquared = pow(kGscalar, 2.0)
             let Hconstants = hbarsquareoverm
-            let Hvalues = kGSquared*Hconstants
+            let Hvalues = __CLPK_doublecomplex(r:kGSquared*Hconstants, i:0.0)
             
-           
-            let hamiltonian = Complex<Double>(Hvalues + V.real, V.imaginary)
+            var hamiltonian = __CLPK_doublecomplex(r:0.0, i:0.0)
+            hamiltonian.r = Hvalues.r + V.r
+            hamiltonian.i = V.i
               H.append(hamiltonian)
             
                 
@@ -361,16 +570,19 @@ class BandStructures: NSObject,ObservableObject {
             
         
     }
-
+       
+//Computes H*H to create a 125x125 matrix
         
-        
-        var HMatrix = [[Complex<Double>]](repeating: [Complex<Double>](repeating: Complex<Double>(0,0), count: 125), count: 125)
+        var HMatrix: [[__CLPK_doublecomplex]] = Array(repeating: Array(repeating: __CLPK_doublecomplex(r: 0, i: 0), count: 125), count: 125)
         
             for i in stride(from: 0, through: 124, by: 1) {
                 for j in stride(from: 0, through: 124, by: 1) {
 
-                    let ij = H[i]*H[j]
-                    HMatrix[i][j] = ij
+                   // (x + yi)(u + vi) = (xu - yv) + (xv + yu)i
+
+                   let first =  H[i].r*H[j].r - H[i].i*H[j].i
+                    let second = H[i].r*H[j].i + H[i].i*H[j].r
+                    HMatrix[i][j] = __CLPK_doublecomplex(r: first, i: second)
 
 
 
@@ -380,15 +592,243 @@ class BandStructures: NSObject,ObservableObject {
             }
         
         
-       
         
         
         
         
         
-  
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //Need to diagonalize matrix and take eigenvalues
+        //Only want REAL eigenvalues
+        //Unsure how to get dgeev FORTRAN function to except complex doubles
+        //zgeev? --> used for double precision complex matrices
+        
+        var Evals = [Double]()
+        var eigenVectors: [[Double]] = []
+        
+        
+        
+            
+            func calculateHamiltonianEigenvalues() async {
+                  Evals = []
+                  eigenVectors = []
+               
+                let fortranArray = pack2dArray(arr: HMatrix, rows: HMatrix.count, cols: HMatrix[0].count)
+                  _ = calculateEigenvalues(arrayForDiagonalization: fortranArray)
+                  // print(result)
+              }
+              
+              /// pack2DArray
+              /// Converts a 2D array into a linear array in FORTRAN Column Major Format
+              /// From code created by Jeff Terry on 1/23/21.
+              /// - Parameters:
+              ///   - arr: 2D array
+              ///   - rows: Number of Rows
+              ///   - cols: Number of Columns
+              /// - Returns: Column Major Linear Array
+        func pack2dArray(arr: [[__CLPK_doublecomplex]], rows: Int, cols: Int) -> [__CLPK_doublecomplex] {
+            var resultArray = Array(repeating: __CLPK_doublecomplex(r: 0.0, i: 0.0), count: rows*cols)
+                  for Iy in 0...cols-1 {
+                      for Ix in 0...rows-1 {
+                          let index = Iy * rows + Ix
+                          resultArray[index] = arr[Ix][Iy]
+                      }
+                  }
+                  return resultArray
+              }
+              
+              /// calculateEigenvalues
+              /// Based on code created by Jeff Terry on 1/23/21.
+              /// Calculates the eigenvalues and eigenvectors for an inputted array. Adds these to parameters Evals and eigenvectors
+              /// - Parameter arrayForDiagonalization: linear Column Major FORTRAN Array for Diagonalization
+              /// - Returns: String consisting of the Eigenvalues and Eigenvectors
+              func calculateEigenvalues(arrayForDiagonalization: [__CLPK_doublecomplex]) -> String {
+                  /* Integers sent to the FORTRAN routines must be type Int32 instead of Int */
+                  //var N = Int32(sqrt(Double(startingArray.count)))
+                      
+                  var returnString = ""
+                      
+                  var N = Int32(sqrt(Double(arrayForDiagonalization.count)))
+                  var N2 = Int32(sqrt(Double(arrayForDiagonalization.count)))
+                  var N3 = Int32(sqrt(Double(arrayForDiagonalization.count)))
+                  var N4 = Int32(sqrt(Double(arrayForDiagonalization.count)))
+                      
+                  var flatArray = arrayForDiagonalization
+                      
+                  var error : Int32 = 0
+                  var lwork = Int32(-1)
+                  // Real parts of eigenvalues
+                  var w = [Double](repeating: 0.0, count: Int(N))
+                  // Imaginary parts of eigenvalues
+                  var vl = [Double](repeating: 0.0, count: Int(N*N))
+                  var vr = [Double](repeating: 0.0, count: Int(N*N))
+                  var rwork = [Double](repeating: 0.0, count: Int(N))
+                      
+                  /* Eigenvalue Calculation Uses dgeev */
+                  //dgeev diagonolizes the HMatrix
+                  /*   int dgeev_(char *jobvl, char *jobvr, Int32 *n, Double * a, Int32 *lda, Double *wr, Double *wi, Double *vl,
+                      Int32 *ldvl, Double *vr, Int32 *ldvr, Double *work, Int32 *lwork, Int32 *info);*/
+                      
+                  /* dgeev_(&calculateLeftEigenvectors, &calculateRightEigenvectors, &c1, AT, &c1, WR, WI, VL, &dummySize, VR, &c2, LWork, &lworkSize, &ok)    */
+                  //zgeev -> Same as dgeev but with complex doubles
+                  /* parameters in the order as they appear in the function call: */
+                  /* order of matrix A, number of right hand sides (b), matrix A, */
+                  /* leading dimension of A, array records pivoting, */
+                  /* result vector b on entry, x on exit, leading dimension of b */
+                  /* return value =0 for success*/
+                      
+                  /* Calculate size of workspace needed for the calculation */
+                      
+                  var workspaceQuery: Double = 0.0
+                  zgeev_(UnsafeMutablePointer(mutating: ("N" as NSString).utf8String), UnsafeMutablePointer(mutating: ("V" as NSString).utf8String), &N, &flatArray, &N2, &w, &vl, &N3, &vr, &N4, &workspaceQuery, &lwork, &rwork, &error)
+                      
+                  print("Workspace Query \(workspaceQuery)")
+                      
+                  /* size workspace per the results of the query */
+                      
+                  var workspace = [Double](repeating: 0.0, count: Int(workspaceQuery))
+                  lwork = Int32(workspaceQuery)
+                      
+                  /* Calculate the size of the workspace */
+                      
+               zgeev_(UnsafeMutablePointer(mutating: ("N" as NSString).utf8String), UnsafeMutablePointer(mutating: ("V" as NSString).utf8String), &N, &flatArray, &N2, &w, &vl, &N3, &vr, &N4, &workspace, &lwork, &rwork, &error)
+                      
+                      
+                  if (error == 0) {
+                      for index in 0..<w.count {     /* transform the returned matrices to eigenvalues and eigenvectors */
+                          if (w[index]>=0.0) {
+                              returnString += "Eigenvalue\n\(rwork[index]) + \(w[index])i\n\n"
+                          }
+                          else {
+                              returnString += "Eigenvalue\n\(rwork[index]) - \(fabs(w[index]))i\n\n"
+                          }
+                          Evals.append(w[index])
+                                      
+                          returnString += "Eigenvector\n"
+                          returnString += "["
+                                      
+                                      
+                          /* To Save Memory dgeev returns a packed array if complex */
+                          /* Must Unpack Properly to Get Correct Result
+                                       
+                              VR is DOUBLE PRECISION array, dimension (LDVR,N)
+                              If JOBVR = 'V', the right eigenvectors v(j) are stored one
+                              after another in the columns of VR, in the same order
+                              as their eigenvalues.
+                              If JOBVR = 'N', VR is not referenced.
+                              If the j-th eigenvalue is real, then v(j) = VR(:,j),
+                              the j-th column of VR.
+                              If the j-th and (j+1)-st eigenvalues form a complex
+                              conjugate pair, then v(j) = VR(:,j) + i*VR(:,j+1) and
+                              v(j+1) = VR(:,j) - i*VR(:,j+1). */
+                          
+                          var newEigenvector: [Double] = []
+                          for j in 0..<N { // Array over each eigenvector component
+                              let newEigenvectorComponent = (rwork[Int(index)*(Int(N))+Int(j)])
+                              newEigenvector.append(newEigenvectorComponent)
+                              if(w[index]==0)
+                              {
+                                  returnString += "\(vr[Int(index)*(Int(N))+Int(j)]) + 0.0i, \n" /* print x */
+                              }
+                              else if(w[index]>0)
+                              {
+                                  if(vr[Int(index)*(Int(N))+Int(j)+Int(N)]>=0)
+                                  {
+                                      returnString += "\(vr[Int(index)*(Int(N))+Int(j)]) + \(vr[Int(index)*(Int(N))+Int(j)+Int(N)])i, \n"
+                                  }
+                                  else
+                                  {
+                                      returnString += "\(vr[Int(index)*(Int(N))+Int(j)]) - \(fabs(vr[Int(index)*(Int(N))+Int(j)+Int(N)]))i, \n"
+                                  }
+                              }
+                              else
+                              {
+                                  if(vr[Int(index)*(Int(N))+Int(j)]>0)
+                                  {
+                                      returnString += "\(vr[Int(index)*(Int(N))+Int(j)-Int(N)]) - \(vr[Int(index)*(Int(N))+Int(j)])i, \n"
+                                      
+                                  }
+                                  else
+                                  {
+                                      returnString += "\(vr[Int(index)*(Int(N))+Int(j)-Int(N)]) + \(fabs(vr[Int(index)*(Int(N))+Int(j)]))i, \n"
+                                      
+                                  }
+                              }
+                          }
+                          eigenVectors.append(newEigenvector)
+                          
+                          /* Remove the last , in the returned Eigenvector */
+                          returnString.remove(at: returnString.index(before: returnString.endIndex))
+                          returnString.remove(at: returnString.index(before: returnString.endIndex))
+                          returnString.remove(at: returnString.index(before: returnString.endIndex))
+                          returnString += "]\n\n"
+                      }
+                  }
+                  else {print("An error occurred\n")}
+                  
+                  return (returnString)
+                  print(Evals)
+        
+              }
+        //Adjust Evals to the fermi level
+        
+        E1.append(Evals[0])
+        E2.append(Evals[1])
+        E3.append(Evals[2])
+        E4.append(Evals[3])
+        E5.append(Evals[4])
+        E6.append(Evals[5])
+        E7.append(Evals[6])
+        E8.append(Evals[7])
+        E9.append(Evals[8])
+        E10.append(Evals[9])
+        
+        //Each E value is a line for the band structure plot
+        
+        
+        //Create values for k to be plotted.
+        //Over same x step as k_array
+        //Makes symmetry point locations now at:
+        //L = 0
+        //Gamma = 0.5
+        //X = 1.5
+        //K = 1.75
+        //Gamma = 2.5
+        
+        
+        var k_plot:[Double] = []
+        for n in stride(from: 0, to: 0.5, by: 0.05) {
+            k_plot.append(n)
+        }
+        for n in stride(from: 0.5, to: 1.5, by: 0.1) {
+            k_plot.append(n)
+        }
+        for n in stride(from: 1.5, to: 1.75, by: 0.025) {
+            k_plot.append(n)
+        }
+        for n in stride(from: 1.75, to: 2.5, by: 0.075) {
+            k_plot.append(n)
+        }
+        
+        
+        count += 1
+       // print(count)
+        H = []
+        HMatrix = []
     }
-  
+        
     
    
     
@@ -397,142 +837,34 @@ class BandStructures: NSObject,ObservableObject {
     
     
     
+    
+    
+    
+    
+    
+    
+    
 
    
     
     
     
-    func getHamiltonian(potential: [Double]) {
-        var delta = 0.0
-        let NValues = 125
-        let HMatrix = [[Double]](repeating: [Double](repeating: 0.0, count: NValues), count: NValues)
-        //if u == v {
-        //    delta = 1.0
-        //}
-        //else {
-        //    delta = 0.0
-        //}
-        
-        
-      //  let kPlusG = zip(k, G).map { $0 + $1 }
-     //   let kGSquared = zip(kPlusG, kPlusG).map { $0 * $1 }
-      //  let Hconstants = hbarsquareoverm
-       // let Hvalues = kGSquared.map { $0 * Hconstants }
-       // let H = zip(Hvalues, potential).map { $0 + $1 }
     
-        
-           
-              
-              
-            //  let N = Int32(H.count)
-              
-              //let flatArray :[Double] = pack2dArray(arr: H, rows: Int(N), cols: Int(N))
-              
-           //   calculateEigenvalues(arrayForDiagonalization: flatArray)
-              
-          }
-
-          
-          /// calculateEigenvalues
-          ///
-          /// - Parameter arrayForDiagonalization: linear Column Major FORTRAN Array for Diagonalization
-          /// - Returns: String consisting of the Eigenvalues and Eigenvectors
-          func calculateEigenvalues(arrayForDiagonalization: [Double]) {
-              /* Integers sent to the FORTRAN routines must be type Int32 instead of Int */
-              //var N = Int32(sqrt(Double(startingArray.count)))
-              
-              
-              var N  = Int32(sqrt(Double(arrayForDiagonalization.count)))
-              var N2 = Int32(sqrt(Double(arrayForDiagonalization.count)))
-              var N3 = Int32(sqrt(Double(arrayForDiagonalization.count)))
-              var N4 = Int32(sqrt(Double(arrayForDiagonalization.count)))
-
-              var flatArray = arrayForDiagonalization
-              
-              var error : Int32 = 0
-              var lwork = Int32(-1)
-              // Real parts of eigenvalues
-              var wr = [Double](repeating: 0.0, count: Int(N))
-              // Imaginary parts of eigenvalues
-              var wi = [Double](repeating: 0.0, count: Int(N))
-              // Left eigenvectors
-              var vl = [Double](repeating: 0.0, count: Int(N*N))
-              // Right eigenvectors
-              var vr = [Double](repeating: 0.0, count: Int(N*N))
-              
-              
-              /* Eigenvalue Calculation Uses dgeev */
-              /*   int dgeev_(char *jobvl, char *jobvr, Int32 *n, Double * a, Int32 *lda, Double *wr, Double *wi, Double *vl,
-               Int32 *ldvl, Double *vr, Int32 *ldvr, Double *work, Int32 *lwork, Int32 *info);*/
-              
-              /* dgeev_(&calculateLeftEigenvectors, &calculateRightEigenvectors, &c1, AT, &c1, WR, WI, VL, &dummySize, VR, &c2, LWork, &lworkSize, &ok)    */
-              /* parameters in the order as they appear in the function call: */
-              /* order of matrix A, number of right hand sides (b), matrix A, */
-              /* leading dimension of A, array records pivoting, */
-              /* result vector b on entry, x on exit, leading dimension of b */
-              /* return value =0 for success*/
-              
-              
-              /* Calculate size of workspace needed for the calculation */
-              
-              var workspaceQuery: Double = 0.0
-              dgeev_(UnsafeMutablePointer(mutating: ("N" as NSString).utf8String), UnsafeMutablePointer(mutating: ("V" as NSString).utf8String), &N, &flatArray, &N2, &wr, &wi, &vl, &N3, &vr, &N4, &workspaceQuery, &lwork, &error)
-              
-        
-              
-              /* size workspace per the results of the query */
-              
-              var workspace = [Double](repeating: 0.0, count: Int(workspaceQuery))
-              lwork = Int32(workspaceQuery)
-              
-              /* Calculate the size of the workspace */
-              
-              dgeev_(UnsafeMutablePointer(mutating: ("N" as NSString).utf8String), UnsafeMutablePointer(mutating: ("V" as NSString).utf8String), &N, &flatArray, &N2, &wr, &wi, &vl, &N3, &vr, &N4, &workspace, &lwork, &error)
-              
-              
-           //   energies = wr
-          //    psi = unpack2dArray(arr: vr, rows: Int(N), cols: Int(N))
-          
-          }
-          
-          
-          /// pack2DArray
-          /// Converts a 2D array into a linear array in FORTRAN Column Major Format
-          ///
-          /// - Parameters:
-          ///   - arr: 2D array
-          ///   - rows: Number of Rows
-          ///   - cols: Number of Columns
-          /// - Returns: Column Major Linear Array
-          func pack2dArray(arr: [[Double]], rows: Int, cols: Int) -> [Double] {
-              var resultArray = Array(repeating: 0.0, count: rows*cols)
-              for Iy in 0...cols-1 {
-                  for Ix in 0...rows-1 {
-                      let index = Iy * rows + Ix
-                      resultArray[index] = arr[Ix][Iy]
-                  }
-              }
-              return resultArray
-          }
-          
-          /// unpack2DArray
-          /// Converts a linear array in FORTRAN Column Major Format to a 2D array in Row Major Format
-          ///
-          /// - Parameters:
-          ///   - arr: Column Major Linear Array
-          ///   - rows: Number of Rows
-          ///   - cols: Number of Columns
-          /// - Returns: 2D array
-          func unpack2dArray(arr: [Double], rows: Int, cols: Int) -> [[Double]] {
-              var resultArray = [[Double]](repeating:[Double](repeating:0.0 ,count:rows), count:cols)
-              for Iy in 0...cols-1 {
-                  for Ix in 0...rows-1 {
-                      let index = Iy * rows + Ix
-                      resultArray[Iy][Ix] = arr[index]
-                  }
-              }
-              return resultArray
-          }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   //How to plot all 10 lines in one graph?
 
         
       
@@ -541,25 +873,124 @@ class BandStructures: NSObject,ObservableObject {
 
             plotDataModel!.calculatedText = "The Band Structure is: \n"
                     plotDataModel!.calculatedText += "k and E \n"
-                    
-                  
-
-
-                    
+        
+//        let graph = CPTXYGraph()
+//
+//
+//        graph.backgroundColor = CPTColor.black().cgColor
+//        graph.zPosition = 1_000
+//
+//        graph.paddingLeft = 0.0
+//        graph.paddingRight = 0.0
+//        graph.paddingTop = 0.0
+//        graph.paddingBottom = 0.0
+//
+//        graph.plotAreaFrame?.masksToBorder = false;
+//        graph.plotAreaFrame?.borderLineStyle = nil
+//        graph.plotAreaFrame?.cornerRadius = 0.0
+//        graph.plotAreaFrame?.paddingTop = 0.0
+//        graph.plotAreaFrame?.paddingLeft = 22.0
+//        graph.plotAreaFrame?.paddingBottom = 35.0
+//        graph.plotAreaFrame?.paddingRight = 4.0
+//        let plotSpace = CPTXYPlotSpace()
+//        graph.add(plotSpace)
+//
+//        plotSpace.allowsUserInteraction = true
+//        plotSpace.allowsMomentumX = true
+//        plotSpace.xRange = CPTPlotRange(locationDecimal: 0.0, lengthDecimal: 100.0)
+//        plotSpace.yRange = CPTPlotRange(locationDecimal: 0.0, lengthDecimal: 1.0)
+//
+//
+//        let plot = CPTScatterPlot()
+//        plot.identifier = E1 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        plot.cachePrecision = .double
+//        let lineStyle = CPTMutableLineStyle()
+//        lineStyle.lineJoin = .round
+//        lineStyle.lineCap = .round
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.magenta()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//
+//        plot.identifier = E2 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.blue()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E3 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.red()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E4 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.green()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E5 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.purple()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E6 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.orange()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E7 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.brown()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E8 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.yellow()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E9 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.cyan()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
+//        plot.identifier = E10 as NSCoding & NSCopying & NSObjectProtocol
+//        plot.dataSource = self
+//        lineStyle.lineWidth = 3.0
+//        lineStyle.lineColor = CPTColor.torquoise()
+//        plot.dataLineStyle = lineStyle
+//        graph.add(plot, to: plotSpace)
+//
                         //set the Plot Parameters
-                        plotDataModel!.changingPlotParameters.yMax = 18.0
-                        plotDataModel!.changingPlotParameters.yMin = -18.1
-                        plotDataModel!.changingPlotParameters.xMax = 15.0
-                        plotDataModel!.changingPlotParameters.xMin = -1.0
-                        plotDataModel!.changingPlotParameters.xLabel = "x"
+                        plotDataModel!.changingPlotParameters.yMax = 25.0
+                        plotDataModel!.changingPlotParameters.yMin = -25.0
+                        plotDataModel!.changingPlotParameters.xMax = 4.0
+                        plotDataModel!.changingPlotParameters.xMin = 0.0
+                        plotDataModel!.changingPlotParameters.xLabel = "k"
                         plotDataModel!.changingPlotParameters.yLabel = "E"
                         plotDataModel!.changingPlotParameters.lineColor = .red()
                         plotDataModel!.changingPlotParameters.title = "E vs k"
                             
-       //     for i in 0..<x_array.count {
-      //      plotDataModel!.calculatedText += "\(x_array[i]), \t\(psi_array[i])\n"
+       //     for i in 0..<k_array.count {
+      //      plotDataModel!.calculatedText += "\(k_plot[i]), \t\(E1[i])\n"
             
-       //                 let dataPoint: plotDataType = [.X: x_array[i], .Y: psi_array[i]]
+       //                 let dataPoint: plotDataType = [.X: k_plot[i], .Y: E1_array[i]]
         //                plotDataModel!.appendData(dataPoint: [dataPoint])
                         
                     
@@ -572,7 +1003,7 @@ class BandStructures: NSObject,ObservableObject {
     
     
     
-        }
+        
         
         
         
@@ -580,7 +1011,7 @@ class BandStructures: NSObject,ObservableObject {
         
         
 
-    
+
     
     
     
@@ -607,3 +1038,4 @@ class BandStructures: NSObject,ObservableObject {
     
     
 
+}

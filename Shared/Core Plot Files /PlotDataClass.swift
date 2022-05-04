@@ -18,7 +18,7 @@ class PlotDataClass: NSObject, ObservableObject {
     @Published var pointNumber = 1.0
     @Published var selectedBand = "Si"
     
-    var PotentialData: Potential? = nil
+    var HData: BandStructures? = nil
     
 
     
@@ -40,10 +40,10 @@ class PlotDataClass: NSObject, ObservableObject {
         plotData = []
         
         //set the Plot Parameters
-        changingPlotParameters.yMax = 4.0
-        changingPlotParameters.yMin = -1.0
+        changingPlotParameters.yMax = 25.0
+        changingPlotParameters.yMin = -25.0
         changingPlotParameters.xMax = 4.0
-        changingPlotParameters.xMin = -1.0
+        changingPlotParameters.xMin = 0.0
         changingPlotParameters.xLabel = "k"
         changingPlotParameters.yLabel = "E (eV)"
         changingPlotParameters.lineColor = .red()
