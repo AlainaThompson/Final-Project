@@ -49,11 +49,10 @@ struct ContentView: View {
                                 Text($0)
                                 
                             }
-       
-    
+             
         }
             HStack{
-                Button("Calculate G", action: {self.calculateBands()} )
+                Button("Calculate G", action: {Task.init{await self.calculateBands()}} )
                             .padding()
                             
                         }
@@ -77,11 +76,11 @@ struct ContentView: View {
     
    
     
-    func calculateBands() {
+    func calculateBands() async {
         
         
         
-        myBands.kPoints()
+        await myBands.kPoints(selectedBand: selectedBand)
         
        
     }
@@ -95,7 +94,7 @@ struct ContentView: View {
             myBands.G = []
         myBands.u = 0.0
         myBands.v = 0.0
-        myBands.w = 0.0
+        myBands.W = 0.0
                 
                 
             }
