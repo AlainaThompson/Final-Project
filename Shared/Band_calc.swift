@@ -163,8 +163,7 @@ class BandStructures: NSObject,ObservableObject {
           k_array.append(kz_array[n])
               
               await makeG(selectedBand: selectedBand)
-              print(k_array)
-              
+           
             
           }
               
@@ -193,7 +192,7 @@ class BandStructures: NSObject,ObservableObject {
               
              
               await makeG(selectedBand: selectedBand)
-              print(k_array)
+             
               
           }
           
@@ -229,8 +228,7 @@ class BandStructures: NSObject,ObservableObject {
               
              
               await makeG(selectedBand: selectedBand)
-              print(k_array)
-              
+            
           }
           
           
@@ -266,7 +264,7 @@ class BandStructures: NSObject,ObservableObject {
           k_array.append(kz_array[n])
               
               await makeG(selectedBand: selectedBand)
-              print(k_array)
+             
               
           }
 
@@ -577,7 +575,7 @@ class BandStructures: NSObject,ObservableObject {
                     V = __CLPK_doublecomplex(r:0.0, i:0.0)
                 }
            
-            
+           
            
           
             
@@ -639,9 +637,7 @@ class BandStructures: NSObject,ObservableObject {
                 }
             }
     
-      
-        
-        
+
         
         
         
@@ -673,7 +669,7 @@ class BandStructures: NSObject,ObservableObject {
                
                 let fortranArray = pack2dArray(arr: HMatrix, rows: HMatrix.count, cols: HMatrix[0].count)
                 calculateEigenvalues(arrayForDiagonalization: fortranArray)
-                 
+                
               }
               
               /// pack2DArray
@@ -705,7 +701,7 @@ class BandStructures: NSObject,ObservableObject {
                   //var N = Int32(sqrt(Double(startingArray.count)))
                       
                   _ = ""
-                      
+                    
                   var N = Int32(sqrt(Double(arrayForDiagonalization.count)))
                   var N2 = Int32(sqrt(Double(arrayForDiagonalization.count)))
                   var N3 = Int32(sqrt(Double(arrayForDiagonalization.count)))
@@ -746,31 +742,27 @@ class BandStructures: NSObject,ObservableObject {
                   var workspaceQuery = __CLPK_doublecomplex(r: 0.0, i: 0.0)
                   zgeev_(UnsafeMutablePointer(mutating: ("N" as NSString).utf8String), UnsafeMutablePointer(mutating: ("V" as NSString).utf8String), &N, &flatArray, &N2, &w, &vl, &N3, &vr, &N4, &workspaceQuery, &lwork, &rwork, &error)
                       
-                 
+                
                       
                   /* size workspace per the results of the query */
                       
                   var workspace = [__CLPK_doublecomplex](repeating: __CLPK_doublecomplex(r: 0.0, i: 0.0), count: Int(workspaceQuery.r))
+                 
                   lwork = Int32(workspaceQuery.r)
-                      
+                    
                   /* Calculate the size of the workspace */
                       
                   zgeev_(UnsafeMutablePointer(mutating: ("N" as NSString).utf8String), UnsafeMutablePointer(mutating: ("V" as NSString).utf8String), &N, &flatArray, &N2, &w, &vl, &N3, &vr, &N4, &workspace, &lwork, &rwork, &error)
                       
-                      
-//                  if (error == 0) {
+                   
+                //  if (error == 0) {
                      for index in 0..<w.count {     /* transform the returned matrices to eigenvalues and eigenvectors */
-//                          if (w[index]>=0.0) {
-//                              returnString += "Eigenvalue\n\(rwork[index]) + \(w[index])i\n\n"
-//                          }
-//                          else {
-//                              returnString += "Eigenvalue\n\(rwork[index]) - \(fabs(w[index]))i\n\n"
-
                          
                          Evals.append(w[index])
-                     }
                        
-                                      
+                     }
+                  
+                    
                          
                                       
                           /* To Save Memory dgeev returns a packed array if complex */
@@ -803,8 +795,7 @@ class BandStructures: NSObject,ObservableObject {
                   
                   
                  
-                
-                  print(Evals)
+         
               }
         //Adjust Evals to the fermi level
         
@@ -827,11 +818,80 @@ class BandStructures: NSObject,ObservableObject {
         
       
     await calculateHamiltonianEigenvalues()
-      
+    //  print(Evals)
         H = []
         HMatrix = []
         Evals = []
-        print("Hi")
+        
     }
+    
+    
+    
+    
+    
+    
+    func makeBandStructurePlot() {
+            plotDataModel!.zeroData()
+
+            plotDataModel!.calculatedText = "The Band Structure is: \n"
+                    plotDataModel!.calculatedText += "k and E \n"
+                    
+                  
+
+
+                    
+                        //set the Plot Parameters
+                        plotDataModel!.changingPlotParameters.yMax = 18.0
+                        plotDataModel!.changingPlotParameters.yMin = -18.1
+                        plotDataModel!.changingPlotParameters.xMax = 15.0
+                        plotDataModel!.changingPlotParameters.xMin = -1.0
+                        plotDataModel!.changingPlotParameters.xLabel = "k"
+                        plotDataModel!.changingPlotParameters.yLabel = "E (eV)"
+                        plotDataModel!.changingPlotParameters.lineColor = .red()
+                        plotDataModel!.changingPlotParameters.title = "Si Band Structure"
+                            
+//            for i in 0..<k_array.count {
+//            plotDataModel!.calculatedText += "\(k_array[i]), \t\(E1[i])\n"
+//            
+//                        let dataPoint: plotDataType = [.X: k_array[i], .Y: E1[i]]
+//                        plotDataModel!.appendData(dataPoint: [dataPoint])
+//                        
+//                    
+//            }
+        }
+      
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 }

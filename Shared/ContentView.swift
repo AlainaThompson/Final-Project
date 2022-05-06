@@ -89,9 +89,9 @@ struct ContentView: View {
     func clear(){
                 
            
-            myBands.k_array = []
-            myBands.H = []
-            myBands.G = []
+        myBands.k_array = []
+        myBands.H = []
+        myBands.G = []
         myBands.u = 0.0
         myBands.v = 0.0
         myBands.W = 0.0
